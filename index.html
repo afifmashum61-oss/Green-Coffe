@@ -473,7 +473,7 @@
         </aside>
 
         <!-- STICKY FLOATING CART BAR FOR MOBILE (Shows when cart has items) -->
-        <div id="mobile-floating-cart-bar" onclick="window.toggleCartDrawer()" class="lg:hidden fixed bottom-18 left-3 right-3 bg-emerald-800 text-white rounded-2xl p-3 shadow-2xl flex items-center justify-between z-30 cursor-pointer hidden border border-emerald-600 transition-all transform active:scale-95">
+        <div id="mobile-floating-cart-bar" onclick="window.toggleCartDrawer()" class="lg:hidden fixed bottom-20 left-3 right-3 bg-emerald-800 text-white rounded-2xl p-3 shadow-2xl flex items-center justify-between z-30 cursor-pointer hidden border border-emerald-600 transition-all transform active:scale-95">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-amber-400 text-amber-950 font-extrabold flex items-center justify-center text-sm shadow-xs">
                     <i class="fa-solid fa-basket-shopping"></i>
@@ -490,26 +490,26 @@
 
         <!-- MOBILE BOTTOM NAVIGATION BAR (Visible on mobile/tablet < md) -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200/80 flex items-center justify-around z-30 px-2 shadow-lg">
-            <button onclick="document.querySelector('[data-tab=menu]').click()" class="mobile-nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700">
+            <button onclick="window.switchTab('menu')" class="mobile-nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700 cursor-pointer">
                 <i class="fa-solid fa-utensils text-base"></i>
                 <span class="text-[10px] font-bold mt-0.5">Kasir</span>
             </button>
-            <button onclick="document.querySelector('[data-tab=orders]').click()" class="mobile-nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700">
+            <button onclick="window.switchTab('orders')" class="mobile-nav-btn flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700 cursor-pointer">
                 <i class="fa-solid fa-receipt text-base"></i>
                 <span class="text-[10px] font-bold mt-0.5">Dapur</span>
             </button>
-            <button onclick="window.toggleCartDrawer()" class="relative flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700">
+            <button onclick="window.toggleCartDrawer()" class="relative flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700 cursor-pointer">
                 <div class="relative">
                     <i class="fa-solid fa-basket-shopping text-lg text-emerald-600"></i>
                     <span id="cart-badge-count-mobile" class="absolute -top-1.5 -right-2.5 w-4 h-4 rounded-full bg-amber-400 text-amber-950 font-extrabold text-[9px] flex items-center justify-center">0</span>
                 </div>
                 <span class="text-[10px] font-bold mt-0.5 text-emerald-700">Keranjang</span>
             </button>
-            <button onclick="document.querySelector('[data-tab=analytics]').click()" class="mobile-nav-btn nav-link flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700">
+            <button onclick="window.switchTab('analytics')" class="mobile-nav-btn nav-link flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700 cursor-pointer" data-tab="analytics">
                 <i class="fa-solid fa-chart-pie text-base"></i>
                 <span class="text-[10px] font-bold mt-0.5">Omset</span>
             </button>
-            <button onclick="document.querySelector('[data-tab=settings]').click()" class="mobile-nav-btn nav-link flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700">
+            <button onclick="window.switchTab('settings')" class="mobile-nav-btn nav-link flex flex-col items-center justify-center w-full h-full text-slate-500 hover:text-emerald-600 active:text-emerald-700 cursor-pointer" data-tab="settings">
                 <i class="fa-solid fa-gear text-base"></i>
                 <span class="text-[10px] font-bold mt-0.5">Pengaturan</span>
             </button>

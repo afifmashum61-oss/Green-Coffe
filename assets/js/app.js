@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             ` : ''}
-                            <button onclick="window.quickAddToCart(${item.id})" title="Tambah ke Keranjang" class="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-all cursor-pointer">
+                            <button onclick="event.stopPropagation(); window.quickAddToCart(${item.id})" title="Tambah ke Keranjang" class="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-all cursor-pointer">
                                 <i class="fa-solid fa-plus text-sm"></i>
                             </button>
                         </div>
@@ -1157,38 +1157,53 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Sidebar Links Switcher
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetTab = link.dataset.tab;
-                if (!targetTab) return;
+    window.switchTab = function(targetTab) {
+        if (!targetTab) return;
 
-                // Security Role Check for Admin-only tabs
-                if ((targetTab === 'settings' || targetTab === 'analytics') && currentUser && currentUser.role !== 'Admin') {
-                    alert('🔒 Akses Dibatasi! Halaman Pengaturan POS & Laporan Penjualan hanya dapat diakses oleh akun Mode Admin.');
-                    return;
-                }
+        // Security Role Check for Admin-only tabs
+        if ((targetTab === 'settings' || targetTab === 'analytics') && currentUser && currentUser.role === 'Kasir') {
+            alert('🔒 Akses Dibatasi! Halaman Pengaturan POS & Laporan Penjualan hanya dapat diakses oleh akun Mode Admin.');
+            return;
+        }
 
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-
-                document.querySelectorAll('.tab-content').forEach(section => {
-                    section.classList.add('hidden');
-                });
-
-                const targetSection = document.getElementById(`tab-${targetTab}`);
-                if (targetSection) targetSection.classList.remove('hidden');
-
-                // Auto Close Mobile Drawers on small screens
-                if (window.innerWidth < 768) {
-                    const sidebar = document.getElementById('sidebar');
-                    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-                    if (sidebar) sidebar.classList.remove('mobile-open');
-                    if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
-                }
-            });
+        // Update active class on all nav links
+        document.querySelectorAll('.nav-link').forEach(l => {
+            if (l.dataset.tab === targetTab) {
+                l.classList.add('active');
+            } else {
+                l.classList.remove('active');
+            }
         });
+
+        // Hide all tab sections & show target section
+        document.querySelectorAll('.tab-content').forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        const targetSection = document.getElementById(`tab-${targetTab}`);
+        if (targetSection) targetSection.classList.remove('hidden');
+
+        // Scroll main content container to top
+        const mainContainer = document.querySelector('main > div');
+        if (mainContainer) mainContainer.scrollTop = 0;
+
+        // Auto Close Mobile Drawers on small screens
+        if (window.innerWidth < 768) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+        }
+    };
+
+    // Sidebar Links Switcher
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTab = link.dataset.tab;
+            if (targetTab) window.switchTab(targetTab);
+        });
+    });
 
         // Order Type Selector Buttons
         document.querySelectorAll('.order-type-btn').forEach(btn => {
