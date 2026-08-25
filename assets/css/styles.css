@@ -24,6 +24,33 @@ body {
     background-color: var(--bg-main);
     color: var(--text-dark);
     overflow-x: hidden;
+    touch-action: manipulation;
+}
+
+/* Disable Mobile Safari Auto-Zoom on Input Focus */
+@media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    body {
+        padding-bottom: 64px; /* Space for Mobile Bottom Navigation */
+    }
+
+    .product-card {
+        padding: 0.85rem;
+    }
+}
+
+/* Fast tap response for buttons and links */
+button, a, input, select, textarea {
+    touch-action: manipulation;
 }
 
 /* Custom Scrollbar */
@@ -145,15 +172,6 @@ body {
 
 .backdrop-show {
     display: block !important;
-}
-
-@media (max-width: 768px) {
-    body {
-        padding-bottom: 64px; /* Space for Mobile Bottom Navigation */
-    }
-    .product-card {
-        padding: 0.85rem;
-    }
 }
 
 /* Modal Thermal Print Styles */
