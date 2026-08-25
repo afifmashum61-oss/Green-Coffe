@@ -100,8 +100,8 @@
                 <div class="flex items-center gap-4">
                     <div class="hidden lg:flex items-center gap-3 border-r border-slate-200 pr-4">
                         <div class="text-right">
-                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Status Kasir</div>
-                            <div class="text-xs font-bold text-emerald-600 flex items-center justify-end gap-1.5">
+                            <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Status User</div>
+                            <div id="header-status-badge" class="text-xs font-bold text-emerald-600 flex items-center justify-end gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                                 Online • POS Active
                             </div>
@@ -122,6 +122,27 @@
 
                 <!-- TAB 1: KASIR & MENU (Default) -->
                 <section id="tab-menu" class="tab-content space-y-6">
+
+                    <!-- ADMIN NOTICE BANNER (Only visible in Mode Admin) -->
+                    <div id="admin-notice-banner" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-amber-950 flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <div class="font-extrabold text-sm text-amber-950">Mode Admin / Manager Aktif</div>
+                                <div class="text-xs text-amber-800">Anda memiliki akses penuh ke Laporan Omset, Pengaturan Pajak, dan Integrasi Database Google Sheets.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="document.querySelector('[data-tab=analytics]').click()" class="flex-1 sm:flex-none px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs">
+                                <i class="fa-solid fa-chart-pie mr-1"></i> Omset
+                            </button>
+                            <button onclick="document.querySelector('[data-tab=settings]').click()" class="flex-1 sm:flex-none px-3 py-1.5 bg-white border border-amber-300 hover:bg-amber-100 text-amber-900 rounded-xl font-bold text-xs">
+                                <i class="fa-solid fa-gear mr-1"></i> Pengaturan
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- HERO BANNER (Inspired by TasteHouse layout image) -->
                     <div class="hero-gradient rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden shadow-xs">

@@ -60,10 +60,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarEl = document.getElementById('operator-avatar');
         const nameEl = document.getElementById('operator-name');
         const roleEl = document.getElementById('operator-role');
+        const headerStatusEl = document.getElementById('header-status-badge');
+        const adminBannerEl = document.getElementById('admin-notice-banner');
 
-        if (avatarEl) avatarEl.innerText = currentUser.avatar || 'OP';
+        if (avatarEl) {
+            avatarEl.innerText = currentUser.avatar || 'OP';
+            avatarEl.className = currentUser.role === 'Admin' 
+                ? 'w-9 h-9 rounded-full bg-amber-400 text-amber-950 font-extrabold flex items-center justify-center text-xs shadow-sm'
+                : 'w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs';
+        }
         if (nameEl) nameEl.innerText = currentUser.name;
-        if (roleEl) roleEl.innerText = `${currentUser.role} • Shift Active`;
+        if (roleEl) roleEl.innerText = `${currentUser.role} • Active`;
+
+        if (headerStatusEl) {
+            headerStatusEl.innerHTML = currentUser.role === 'Admin'
+                ? `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Mode Admin • Full Access`
+                : `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Online • Mode Kasir`;
+            headerStatusEl.className = currentUser.role === 'Admin'
+                ? 'text-xs font-bold text-amber-700 flex items-center justify-end gap-1.5'
+                : 'text-xs font-bold text-emerald-600 flex items-center justify-end gap-1.5';
+        }
+
+        // Show/Hide Sidebar Menus Based on Role
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const tab = link.dataset.tab;
+            if (tab === 'settings' || tab === 'analytics') {
+                if (currentUser.role === 'Kasir') {
+                    link.classList.add('hidden');
+                } else {
+                    link.classList.remove('hidden');
+                }
+            }
+        });
+
+        // Show Admin Notice Banner
+        if (adminBannerEl) {
+            if (currentUser.role === 'Admin') {
+                adminBannerEl.classList.remove('hidden');
+            } else {
+                adminBannerEl.classList.add('hidden');
+            }
+        }
     }
 
     window.selectLoginRole = function(role) {
