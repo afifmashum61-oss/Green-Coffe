@@ -635,6 +635,22 @@ document.addEventListener('DOMContentLoaded', () => {
         ordersHistory.unshift(newOrder);
         localStorage.setItem('green_cafe_orders', JSON.stringify(ordersHistory));
 
+        // Sync order to Google Sheets Database if configured
+        const gsheetUrl = localStorage.getItem('green_cafe_gsheet_url');
+        if (gsheetUrl && gsheetUrl.trim() !== '') {
+            try {
+                fetch(gsheetUrl.trim(), {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newOrder)
+                }).then(() => console.log('Order synced to Google Sheets database!'))
+                  .catch(err => console.warn('Google Sheets sync notice:', err));
+            } catch (e) {
+                console.warn('Sync warning:', e);
+            }
+        }
+
         window.closePaymentModal();
         showReceiptModal(newOrder);
 
@@ -889,7 +905,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cashInput) {
             cashInput.addEventListener('input', calculateCashChange);
         }
+
+        // Load saved Google Sheets URL into input field
+        const gsheetInput = document.getElementById('gsheet-url-input');
+        if (gsheetInput) {
+            gsheetInput.value = localStorage.getItem('green_cafe_gsheet_url') || '';
+        }
     }
+
+    window.saveSettings = function() {
+        const gsheetInput = document.getElementById('gsheet-url-input');
+        if (gsheetInput) {
+            const url = gsheetInput.value.trim();
+            localStorage.setItem('green_cafe_gsheet_url', url);
+            alert('Pengaturan POS dan URL Google Sheets Database berhasil disimpan!');
+        }
+    };
 
     // Start App
     init();
