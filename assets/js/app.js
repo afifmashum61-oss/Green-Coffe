@@ -187,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameEl = document.getElementById('operator-name');
         const roleEl = document.getElementById('operator-role');
         const headerStatusEl = document.getElementById('header-status-badge');
-        const adminBannerEl = document.getElementById('admin-notice-banner');
 
         if (avatarEl) {
             avatarEl.innerText = currentUser.avatar || 'OP';
@@ -218,15 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        // Show Admin Notice Banner
-        if (adminBannerEl) {
-            if (currentUser.role === 'Admin') {
-                adminBannerEl.classList.remove('hidden');
-            } else {
-                adminBannerEl.classList.add('hidden');
-            }
-        }
     }
 
     window.selectLoginRole = function(role) {
