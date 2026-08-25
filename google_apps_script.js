@@ -3,17 +3,12 @@
  * 🍃 GREEN CAFE POS - GOOGLE APPS SCRIPT DATABASE SYNC
  * ====================================================================
  * 
- * PANDUAN PEMASANGAN:
- * 1. Buka Google Sheets baru di https://sheets.new
- * 2. Beri nama Google Sheets: "Green Cafe POS Database"
- * 3. Klik menu "Ekstensi" (Extensions) > "Apps Script"
- * 4. Hapus semua kode default, lalu tempelkan (paste) seluruh kode ini.
- * 5. Klik tombol "Simpan" (Save / Ctrl+S).
- * 6. Klik "Terapkan" (Deploy) > "Terapkan sebagai aplikasi web" (New deployment).
- * 7. Pada bagian "Siapa yang memiliki akses" (Who has access), pilih: "Siapa saja" (Anyone).
- * 8. Klik "Terapkan" (Deploy), lalu izinkan akses (Authorize Access).
- * 9. Salin URL Aplikasi Web (Web App URL) yang dihasilkan.
- * 10. Tempelkan URL tersebut ke Pengaturan POS (Tab Settings) di Web Kasir Green Cafe!
+ * PANDUAN PEMASANGAN / UPDATE:
+ * 1. Buka Google Sheets Anda: "db green"
+ * 2. Klik menu "Ekstensi" (Extensions) > "Apps Script"
+ * 3. Hapus semua kode lama, lalu tempelkan (paste) seluruh kode ini.
+ * 4. Klik tombol "Simpan" (Save / Ctrl+S).
+ * 5. Klik "Terapkan" (Deploy) > "Kelola Peluncuran" (Manage Deployments) > Edit > Versi Baru (New version) > Terapkan (Deploy).
  */
 
 function doPost(e) {
@@ -87,7 +82,43 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService
-    .createTextOutput("🍃 Green Cafe POS Database API Active!")
-    .setMimeType(ContentService.MimeType.TEXT);
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var lastRow = sheet.getLastRow();
+    
+    if (lastRow <= 1) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "success", transactions: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var rows = sheet.getRange(2, 1, lastRow - 1, 14).getValues();
+    var transactions = rows.map(function(row) {
+      return {
+        id: row[0],
+        date: row[1],
+        time: row[2],
+        orderType: row[3],
+        table: row[4],
+        customer: row[5],
+        itemsSummary: row[6],
+        subtotal: Number(row[7]),
+        discount: Number(row[8]),
+        tax: Number(row[9]),
+        service: Number(row[10]),
+        grandTotal: Number(row[11]),
+        paymentMethod: row[12],
+        status: row[13]
+      };
+    });
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "success", transactions: transactions }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
