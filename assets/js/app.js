@@ -643,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch(gsheetUrl.trim(), {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(newOrder)
                 }).then(() => console.log('Order synced to Google Sheets database!'))
                   .catch(err => console.warn('Google Sheets sync notice:', err));
