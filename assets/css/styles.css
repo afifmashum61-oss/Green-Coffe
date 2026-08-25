@@ -138,6 +138,24 @@ body {
     animation: bump 0.3s ease-out;
 }
 
+/* Responsive Mobile Offcanvas Drawers & Animations */
+.drawer-open {
+    transform: translateX(0) !important;
+}
+
+.backdrop-show {
+    display: block !important;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 64px; /* Space for Mobile Bottom Navigation */
+    }
+    .product-card {
+        padding: 0.85rem;
+    }
+}
+
 /* Modal Thermal Print Styles */
 @media print {
     body * {

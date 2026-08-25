@@ -609,6 +609,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalItemCount = cart.reduce((sum, i) => sum + i.qty, 0);
         if (cartBadgeCount) cartBadgeCount.innerText = totalItemCount;
         if (cartCountHeader) cartCountHeader.innerText = `(${totalItemCount} Item)`;
+        
+        const cartBadgeMobile = document.getElementById('cart-badge-count-mobile');
+        if (cartBadgeMobile) cartBadgeMobile.innerText = totalItemCount;
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `
@@ -1160,6 +1163,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const targetSection = document.getElementById(`tab-${targetTab}`);
                 if (targetSection) targetSection.classList.remove('hidden');
+
+                // Auto Close Mobile Drawers
+                const sidebar = document.getElementById('sidebar');
+                const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+                if (sidebar && sidebar.classList.contains('translate-x-0')) {
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                    if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+                }
             });
         });
 
@@ -1305,14 +1317,38 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Menu dan harga berhasil diperbarui!');
     };
 
-    window.deleteMenuItem = function(itemId) {
-        const item = menuItemsList.find(m => m.id === itemId);
-        if (!item) return;
+    // Responsive Mobile Drawers Toggle
+    window.toggleMobileSidebar = function() {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (!sidebar) return;
 
-        if (confirm(`Apakah Anda yakin ingin menghapus menu "${item.name}"?`)) {
-            menuItemsList = menuItemsList.filter(m => m.id !== itemId);
-            saveMenuItemsList();
-            alert(`Menu "${item.name}" berhasil dihapus.`);
+        const isOpen = sidebar.classList.contains('translate-x-0');
+        if (isOpen) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            if (backdrop) backdrop.classList.add('hidden');
+        } else {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            if (backdrop) backdrop.classList.remove('hidden');
+        }
+    };
+
+    window.toggleCartDrawer = function() {
+        const cartDrawer = document.getElementById('cart-drawer');
+        const backdrop = document.getElementById('cart-backdrop');
+        if (!cartDrawer) return;
+
+        const isOpen = cartDrawer.classList.contains('translate-x-0');
+        if (isOpen) {
+            cartDrawer.classList.remove('translate-x-0');
+            cartDrawer.classList.add('translate-x-full');
+            if (backdrop) backdrop.classList.add('hidden');
+        } else {
+            cartDrawer.classList.remove('translate-x-full');
+            cartDrawer.classList.add('translate-x-0');
+            if (backdrop) backdrop.classList.remove('hidden');
         }
     };
 
