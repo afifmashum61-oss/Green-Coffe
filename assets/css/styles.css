@@ -1,0 +1,168 @@
+/* Green Cafe Custom CSS Styles & Thermal Print Formatter */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+    --primary-dark: #1E5128;
+    --primary: #4E9F3D;
+    --primary-light: #D8E9A8;
+    --primary-bg: #E8F5E9;
+    --accent-orange: #FF7043;
+    --accent-gold: #FFB300;
+    --bg-main: #F7F9F6;
+    --card-bg: #FFFFFF;
+    --text-dark: #191C19;
+    --text-muted: #6C757D;
+    --border-light: #E2E8F0;
+    --shadow-sm: 0 2px 8px rgba(30, 81, 40, 0.04);
+    --shadow-md: 0 8px 24px rgba(30, 81, 40, 0.08);
+    --shadow-hover: 0 12px 32px rgba(30, 81, 40, 0.12);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c2dbc3;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Glassmorphism & Cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.hero-gradient {
+    background: linear-gradient(135deg, #FFF8F0 0%, #F0FDF4 100%);
+    border: 1px solid #E8F5E9;
+}
+
+.badge-green {
+    background-color: #E8F5E9;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.badge-orange {
+    background-color: #FFF3E0;
+    color: #E65100;
+    font-weight: 600;
+}
+
+.badge-red {
+    background-color: #FFEBEE;
+    color: #C62828;
+    font-weight: 600;
+}
+
+/* Sidebar Active Item */
+.sidebar-link {
+    transition: all 0.25s ease;
+    border-radius: 12px;
+}
+
+.sidebar-link:hover {
+    background-color: #F0F7F0;
+    color: var(--primary-dark);
+}
+
+.sidebar-link.active {
+    background-color: var(--primary-dark);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(30, 81, 40, 0.25);
+}
+
+/* Category Card Styling inspired by TasteHouse */
+.category-card {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.category-card.active {
+    background-color: #E8F5E9;
+    border-color: var(--primary);
+    box-shadow: 0 4px 14px rgba(78, 159, 61, 0.18);
+}
+
+/* Menu Product Card */
+.product-card {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.product-card .img-zoom {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .img-zoom {
+    transform: scale(1.06);
+}
+
+/* Pulse animation for cart bump */
+@keyframes bump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.cart-bump {
+    animation: bump 0.3s ease-out;
+}
+
+/* Modal Thermal Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #thermal-receipt-printable, #thermal-receipt-printable * {
+        visibility: visible;
+    }
+    #thermal-receipt-printable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80mm;
+        margin: 0 auto;
+        padding: 10px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+        color: #000;
+        background: #fff;
+    }
+}
+
+.receipt-paper {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #FFFDF9;
+    border: 1px dashed #CBD5E1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
