@@ -703,6 +703,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cartServiceEl) cartServiceEl.innerText = formatRupiah(service);
         if (cartGrandTotalEl) cartGrandTotalEl.innerText = formatRupiah(grandTotal);
 
+        // Update Mobile Floating Cart Bar
+        const floatBar = document.getElementById('mobile-floating-cart-bar');
+        const floatCount = document.getElementById('mobile-float-count');
+        const floatTotal = document.getElementById('mobile-float-total');
+
+        if (floatBar) {
+            const totalItemCount = cart.reduce((sum, i) => sum + i.qty, 0);
+            if (totalItemCount > 0) {
+                floatBar.classList.remove('hidden');
+                if (floatCount) floatCount.innerText = `${totalItemCount} Item dalam Keranjang`;
+                if (floatTotal) floatTotal.innerText = formatRupiah(grandTotal);
+            } else {
+                floatBar.classList.add('hidden');
+            }
+        }
+
         return { subtotal, discount, tax, service, grandTotal };
     }
 
