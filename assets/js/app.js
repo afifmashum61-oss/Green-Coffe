@@ -166,6 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAuthStatus() {
         const loginModal = document.getElementById('login-modal');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartBackdrop = document.getElementById('cart-backdrop');
+
         if (!currentUser) {
             if (loginModal) {
                 loginModal.classList.remove('hidden');
@@ -177,6 +182,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginModal.classList.add('hidden');
                 loginModal.classList.remove('flex');
             }
+
+            // Ensure mobile sidebar & cart drawer are closed when logged in
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+            if (cartDrawer) cartDrawer.classList.remove('mobile-open');
+            if (cartBackdrop) cartBackdrop.classList.add('hidden');
+
             updateOperatorProfile();
         }
     }
