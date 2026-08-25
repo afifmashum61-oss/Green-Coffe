@@ -30,13 +30,139 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartGrandTotalEl = document.getElementById('cart-grandtotal');
     const cartCountHeader = document.getElementById('cart-count-header');
     
-    // Auth State & User Roles Management
+    // Auth State & Persistent User Database
     let currentUser = JSON.parse(sessionStorage.getItem('green_cafe_user') || 'null');
 
-    const USERS_DATABASE = [
+    const DEFAULT_USERS = [
         { username: 'kasir', pin: '1234', name: 'Sarah Amalia', role: 'Kasir', avatar: 'SA' },
         { username: 'admin', pin: '8888', name: 'Budi (Admin Manager)', role: 'Admin', avatar: 'AD' }
     ];
+    let usersDatabase = JSON.parse(localStorage.getItem('green_cafe_users_db') || JSON.stringify(DEFAULT_USERS));
+
+    function saveUsersDatabase() {
+        localStorage.setItem('green_cafe_users_db', JSON.stringify(usersDatabase));
+        renderUsersList();
+    }
+
+    function renderUsersList() {
+        const container = document.getElementById('users-list-container');
+        if (!container) return;
+
+        container.innerHTML = usersDatabase.map((user, idx) => `
+            <div class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full ${user.role === 'Admin' ? 'bg-amber-400 text-amber-950 font-extrabold' : 'bg-emerald-100 text-emerald-800 font-bold'} flex items-center justify-center text-xs">
+                        ${user.avatar || user.name.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-xs text-slate-800">${user.name}</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${user.role === 'Admin' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800'}">
+                                ${user.role}
+                            </span>
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">
+                            Username: <code class="bg-white px-1 border rounded text-slate-700 font-mono">${user.username}</code> • PIN: <code class="bg-white px-1 border rounded text-slate-700 font-mono">${user.pin}</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="window.openEditUserModal(${idx})" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl text-xs font-bold shadow-2xs">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Nama / PIN
+                    </button>
+                    ${usersDatabase.length > 1 ? `
+                        <button onclick="window.deleteUserAccount(${idx})" class="p-1.5 text-slate-400 hover:text-rose-600 text-xs">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.openEditUserModal = function(index) {
+        const user = usersDatabase[index];
+        if (!user) return;
+
+        document.getElementById('edit-user-modal-title').innerText = `Edit Pengguna: ${user.name}`;
+        document.getElementById('edit-user-index').value = index;
+        document.getElementById('edit-user-username').value = user.username;
+        document.getElementById('edit-user-username').readOnly = true;
+        document.getElementById('edit-user-name').value = user.name;
+        document.getElementById('edit-user-role').value = user.role;
+        document.getElementById('edit-user-pin').value = user.pin;
+
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    };
+
+    window.openAddUserModal = function() {
+        document.getElementById('edit-user-modal-title').innerText = 'Tambah Pengguna Kasir Baru';
+        document.getElementById('edit-user-index').value = '-1';
+        document.getElementById('edit-user-username').value = '';
+        document.getElementById('edit-user-username').readOnly = false;
+        document.getElementById('edit-user-name').value = '';
+        document.getElementById('edit-user-role').value = 'Kasir';
+        document.getElementById('edit-user-pin').value = '1234';
+
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    };
+
+    window.closeEditUserModal = function() {
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    };
+
+    window.saveUserChanges = function(event) {
+        event.preventDefault();
+        const idx = parseInt(document.getElementById('edit-user-index').value, 10);
+        const username = document.getElementById('edit-user-username').value.trim().toLowerCase();
+        const name = document.getElementById('edit-user-name').value.trim();
+        const role = document.getElementById('edit-user-role').value;
+        const pin = document.getElementById('edit-user-pin').value.trim();
+
+        const words = name.split(' ');
+        const avatar = words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
+
+        if (idx === -1) {
+            if (usersDatabase.some(u => u.username === username)) {
+                alert('Username sudah digunakan! Pilih username lain.');
+                return;
+            }
+            usersDatabase.push({ username, pin, name, role, avatar });
+        } else {
+            usersDatabase[idx] = { ...usersDatabase[idx], username, pin, name, role, avatar };
+            if (currentUser && currentUser.username === username) {
+                currentUser = usersDatabase[idx];
+                sessionStorage.setItem('green_cafe_user', JSON.stringify(currentUser));
+                updateOperatorProfile();
+            }
+        }
+
+        saveUsersDatabase();
+        window.closeEditUserModal();
+        alert('Data pengguna berhasil diperbarui!');
+    };
+
+    window.deleteUserAccount = function(index) {
+        const user = usersDatabase[index];
+        if (!user) return;
+
+        if (confirm(`Apakah Anda yakin ingin menghapus akun ${user.name} (${user.username})?`)) {
+            usersDatabase.splice(index, 1);
+            saveUsersDatabase();
+        }
+    };
 
     function checkAuthStatus() {
         const loginModal = document.getElementById('login-modal');
@@ -140,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = document.getElementById('login-username').value.trim().toLowerCase();
         const pin = document.getElementById('login-password').value.trim();
 
-        const foundUser = USERS_DATABASE.find(u => u.username === username && u.pin === pin);
+        const foundUser = usersDatabase.find(u => u.username === username && u.pin === pin);
         if (!foundUser) {
             alert('Username atau PIN/Password salah! Silakan coba lagi.');
             return;
@@ -169,6 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMembersList();
         renderOrderHistory();
         renderAnalytics();
+        renderUsersList();
         setupEventListeners();
     }
 
