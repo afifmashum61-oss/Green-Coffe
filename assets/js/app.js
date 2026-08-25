@@ -1180,12 +1180,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetSection = document.getElementById(`tab-${targetTab}`);
                 if (targetSection) targetSection.classList.remove('hidden');
 
-                // Auto Close Mobile Drawers
-                const sidebar = document.getElementById('sidebar');
-                const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-                if (sidebar && sidebar.classList.contains('translate-x-0')) {
-                    sidebar.classList.remove('translate-x-0');
-                    sidebar.classList.add('-translate-x-full');
+                // Auto Close Mobile Drawers on small screens
+                if (window.innerWidth < 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+                    if (sidebar) sidebar.classList.remove('mobile-open');
                     if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
                 }
             });
@@ -1333,38 +1332,28 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Menu dan harga berhasil diperbarui!');
     };
 
-    // Responsive Mobile Drawers Toggle
+    // Responsive Mobile Drawers Toggle (Applies ONLY on mobile/tablet screens)
     window.toggleMobileSidebar = function() {
+        if (window.innerWidth >= 768) return;
         const sidebar = document.getElementById('sidebar');
         const backdrop = document.getElementById('sidebar-backdrop');
         if (!sidebar) return;
 
-        const isOpen = sidebar.classList.contains('translate-x-0');
-        if (isOpen) {
-            sidebar.classList.remove('translate-x-0');
-            sidebar.classList.add('-translate-x-full');
-            if (backdrop) backdrop.classList.add('hidden');
-        } else {
-            sidebar.classList.remove('-translate-x-full');
-            sidebar.classList.add('translate-x-0');
-            if (backdrop) backdrop.classList.remove('hidden');
+        sidebar.classList.toggle('mobile-open');
+        if (backdrop) {
+            backdrop.classList.toggle('hidden', !sidebar.classList.contains('mobile-open'));
         }
     };
 
     window.toggleCartDrawer = function() {
+        if (window.innerWidth >= 1024) return;
         const cartDrawer = document.getElementById('cart-drawer');
         const backdrop = document.getElementById('cart-backdrop');
         if (!cartDrawer) return;
 
-        const isOpen = cartDrawer.classList.contains('translate-x-0');
-        if (isOpen) {
-            cartDrawer.classList.remove('translate-x-0');
-            cartDrawer.classList.add('translate-x-full');
-            if (backdrop) backdrop.classList.add('hidden');
-        } else {
-            cartDrawer.classList.remove('translate-x-full');
-            cartDrawer.classList.add('translate-x-0');
-            if (backdrop) backdrop.classList.remove('hidden');
+        cartDrawer.classList.toggle('mobile-open');
+        if (backdrop) {
+            backdrop.classList.toggle('hidden', !cartDrawer.classList.contains('mobile-open'));
         }
     };
 
