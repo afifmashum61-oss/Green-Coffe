@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : 'text-xs font-bold text-emerald-600 flex items-center justify-end gap-1.5';
         }
 
-        // Show/Hide Sidebar Menus Based on Role
+        // Show/Hide Sidebar Menus & Admin Buttons Based on Role
         document.querySelectorAll('.nav-link').forEach(link => {
             const tab = link.dataset.tab;
             if (tab === 'settings' || tab === 'analytics') {
@@ -217,6 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        const adminAddBtnContainer = document.getElementById('admin-add-menu-btn-container');
+        if (adminAddBtnContainer) {
+            adminAddBtnContainer.classList.toggle('hidden', currentUser.role !== 'Admin');
+        }
+        renderMenu();
     }
 
     window.selectLoginRole = function(role) {
@@ -298,6 +304,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }).format(number);
     }
 
+    // Persistent Menu Items Database
+    let menuItemsList = JSON.parse(localStorage.getItem('green_cafe_menu_list') || JSON.stringify(MENU_ITEMS));
+
+    function saveMenuItemsList() {
+        localStorage.setItem('green_cafe_menu_list', JSON.stringify(menuItemsList));
+        renderCategories();
+        renderMenu();
+    }
+
     // Render Categories Tab
     function renderCategories() {
         if (!categoriesContainer) return;
@@ -308,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div>
                     <div class="text-sm font-semibold whitespace-nowrap">${cat.name}</div>
-                    <div class="text-xs text-slate-400">${cat.id === 'all' ? MENU_ITEMS.length : MENU_ITEMS.filter(m => m.category === cat.id).length} Item</div>
+                    <div class="text-xs text-slate-400">${cat.id === 'all' ? menuItemsList.length : menuItemsList.filter(m => m.category === cat.id).length} Item</div>
                 </div>
             </button>
         `).join('');
@@ -326,13 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderMenu() {
         if (!menuGrid) return;
         
-        let filtered = MENU_ITEMS;
+        let filtered = menuItemsList;
         if (currentCategory !== 'all') {
             filtered = filtered.filter(item => item.category === currentCategory);
         }
         if (searchQuery.trim() !== '') {
             const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(item => item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query));
+            filtered = filtered.filter(item => item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)));
         }
 
         if (filtered.length === 0) {
@@ -347,6 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             return;
         }
+
+        const isAdmin = currentUser && currentUser.role === 'Admin';
 
         menuGrid.innerHTML = filtered.map(item => `
             <div class="product-card bg-white rounded-3xl p-4 border border-slate-100 flex flex-col justify-between relative group shadow-sm hover:shadow-md">
@@ -369,15 +386,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex flex-col flex-1">
                     <div class="flex items-center gap-1.5 mb-1 text-amber-400 text-xs font-medium">
                         <i class="fa-solid fa-star"></i>
-                        <span class="font-bold text-slate-800">${item.rating}</span>
-                        <span class="text-slate-400">(${item.reviewsCount})</span>
+                        <span class="font-bold text-slate-800">${item.rating || 4.8}</span>
+                        <span class="text-slate-400">(${item.reviewsCount || 50})</span>
                     </div>
 
                     <h3 class="font-bold text-slate-800 text-base leading-tight mb-1 group-hover:text-emerald-700 transition-colors cursor-pointer" onclick="window.openCustomModal(${item.id})">
                         ${item.name}
                     </h3>
                     <p class="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
-                        ${item.description}
+                        ${item.description || 'Menu lezat khas Green Cafe.'}
                     </p>
 
                     <div class="mt-auto pt-2 flex items-center justify-between border-t border-slate-100">
@@ -392,9 +409,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             ` : ''}
                         </div>
 
-                        <button onclick="window.quickAddToCart(${item.id})" class="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-all cursor-pointer">
-                            <i class="fa-solid fa-plus text-sm"></i>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            ${isAdmin ? `
+                                <button onclick="window.openEditMenuItemModal(${item.id})" title="Edit Nama & Harga Menu" class="w-8 h-8 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="window.deleteMenuItem(${item.id})" title="Hapus Menu" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="window.quickAddToCart(${item.id})" title="Tambah ke Keranjang" class="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-all cursor-pointer">
+                                <i class="fa-solid fa-plus text-sm"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -403,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Quick Add To Cart without Modal
     window.quickAddToCart = function(itemId) {
-        const item = MENU_ITEMS.find(m => m.id === itemId);
+        const item = menuItemsList.find(m => m.id === itemId);
         if (!item) return;
 
         const cartIndex = cart.findIndex(c => c.id === itemId && (!c.extras || c.extras.length === 0) && !c.note);
@@ -428,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open Customization Modal
     window.openCustomModal = function(itemId) {
-        const item = MENU_ITEMS.find(m => m.id === itemId);
+        const item = menuItemsList.find(m => m.id === itemId);
         if (!item) return;
 
         currentCustomizingItem = JSON.parse(JSON.stringify(item));
@@ -1174,6 +1201,118 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = gsheetInput.value.trim();
             localStorage.setItem('green_cafe_gsheet_url', url);
             alert('Pengaturan POS dan URL Google Sheets Database berhasil disimpan!');
+        }
+    };
+
+    // Admin Menu & Price Management Functions
+    window.openAddMenuItemModal = function() {
+        document.getElementById('edit-menu-item-modal-title').innerText = 'Tambah Menu Baru';
+        document.getElementById('edit-item-id').value = '';
+        document.getElementById('edit-item-name').value = '';
+        document.getElementById('edit-item-category').value = 'coffee';
+        document.getElementById('edit-item-price').value = '';
+        document.getElementById('edit-item-original-price').value = '';
+        document.getElementById('edit-item-badge').value = '';
+        document.getElementById('edit-item-image').value = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
+        document.getElementById('edit-item-desc').value = '';
+
+        const modal = document.getElementById('edit-menu-item-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    };
+
+    window.openEditMenuItemModal = function(itemId) {
+        const item = menuItemsList.find(m => m.id === itemId);
+        if (!item) return;
+
+        document.getElementById('edit-menu-item-modal-title').innerText = `Edit Menu & Harga: ${item.name}`;
+        document.getElementById('edit-item-id').value = item.id;
+        document.getElementById('edit-item-name').value = item.name;
+        document.getElementById('edit-item-category').value = item.category;
+        document.getElementById('edit-item-price').value = item.price;
+        document.getElementById('edit-item-original-price').value = item.originalPrice || '';
+        document.getElementById('edit-item-badge').value = item.badge || '';
+        document.getElementById('edit-item-image').value = item.image || '';
+        document.getElementById('edit-item-desc').value = item.description || '';
+
+        const modal = document.getElementById('edit-menu-item-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    };
+
+    window.closeEditMenuItemModal = function() {
+        const modal = document.getElementById('edit-menu-item-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    };
+
+    window.saveMenuItemChanges = function(event) {
+        event.preventDefault();
+        const idStr = document.getElementById('edit-item-id').value;
+        const name = document.getElementById('edit-item-name').value.trim();
+        const category = document.getElementById('edit-item-category').value;
+        const price = parseInt(document.getElementById('edit-item-price').value, 10) || 0;
+        const originalPriceStr = document.getElementById('edit-item-original-price').value;
+        const originalPrice = originalPriceStr ? parseInt(originalPriceStr, 10) : null;
+        const badge = document.getElementById('edit-item-badge').value.trim();
+        const image = document.getElementById('edit-item-image').value.trim();
+        const description = document.getElementById('edit-item-desc').value.trim();
+
+        if (idStr === '') {
+            // New Item
+            const newId = menuItemsList.length > 0 ? Math.max(...menuItemsList.map(m => m.id)) + 1 : 101;
+            menuItemsList.push({
+                id: newId,
+                name,
+                category,
+                price,
+                originalPrice,
+                rating: 4.8,
+                reviewsCount: 1,
+                badge: badge || null,
+                discountBadge: originalPrice && originalPrice > price ? `${Math.round((1 - price / originalPrice) * 100)}% OFF` : null,
+                image: image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+                description: description || 'Menu lezat khas Green Cafe.',
+                options: {}
+            });
+        } else {
+            // Edit Existing
+            const id = parseInt(idStr, 10);
+            const idx = menuItemsList.findIndex(m => m.id === id);
+            if (idx > -1) {
+                menuItemsList[idx] = {
+                    ...menuItemsList[idx],
+                    name,
+                    category,
+                    price,
+                    originalPrice,
+                    badge: badge || null,
+                    discountBadge: originalPrice && originalPrice > price ? `${Math.round((1 - price / originalPrice) * 100)}% OFF` : null,
+                    image,
+                    description
+                };
+            }
+        }
+
+        saveMenuItemsList();
+        window.closeEditMenuItemModal();
+        alert('Menu dan harga berhasil diperbarui!');
+    };
+
+    window.deleteMenuItem = function(itemId) {
+        const item = menuItemsList.find(m => m.id === itemId);
+        if (!item) return;
+
+        if (confirm(`Apakah Anda yakin ingin menghapus menu "${item.name}"?`)) {
+            menuItemsList = menuItemsList.filter(m => m.id !== itemId);
+            saveMenuItemsList();
+            alert(`Menu "${item.name}" berhasil dihapus.`);
         }
     };
 

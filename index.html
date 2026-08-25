@@ -213,8 +213,16 @@
                     <!-- POPULAR DISHES MENU GRID -->
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-extrabold text-slate-800 text-lg">Daftar Menu Green Cafe</h3>
-                            <span class="text-xs text-slate-400 font-medium">Klik gambar/nama untuk opsi varian</span>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-lg">Daftar Menu Green Cafe</h3>
+                                <p class="text-xs text-slate-400 font-medium">Klik gambar/nama untuk opsi varian</p>
+                            </div>
+                            <div id="admin-add-menu-btn-container" class="hidden">
+                                <button onclick="window.openAddMenuItemModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                    <span>Tambah Menu Baru</span>
+                                </button>
+                            </div>
                         </div>
                         <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
                             <!-- Injected dynamically via app.js -->
@@ -649,6 +657,76 @@
                         Simpan Data Pengguna
                     </button>
                     <button type="button" onclick="window.closeEditUserModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 5: ADD / EDIT MENU ITEM (ADMIN ONLY) ================= -->
+    <div id="edit-menu-item-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-base" id="edit-menu-item-modal-title">Edit Menu & Harga</h3>
+                <button onclick="window.closeEditMenuItemModal()" class="text-slate-400 hover:text-slate-600 text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="edit-menu-item-form" onsubmit="window.saveMenuItemChanges(event)" class="space-y-3">
+                <input type="hidden" id="edit-item-id">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Makanan / Minuman:</label>
+                    <input type="text" id="edit-item-name" required placeholder="Misal: Matcha Latte Organik" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Menu:</label>
+                        <select id="edit-item-category" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-semibold">
+                            <option value="coffee">Kopi & Espresso</option>
+                            <option value="tea">Teh Organic</option>
+                            <option value="juice">Cold-Pressed Juice</option>
+                            <option value="makanan">Makanan Utama</option>
+                            <option value="pastry">Pastry & Roti</option>
+                            <option value="bowls">Healthy Bowls</option>
+                            <option value="dessert">Dessert & Cake</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Jual (Rp):</label>
+                        <input type="number" id="edit-item-price" required placeholder="45000" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-800">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Harga Coret / Original (Rp):</label>
+                        <input type="number" id="edit-item-original-price" placeholder="55000 (Opsional)" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Badge Label:</label>
+                        <input type="text" id="edit-item-badge" placeholder="Bestseller / Organic / Baru" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">URL Foto Gambar:</label>
+                    <input type="url" id="edit-item-image" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Menu:</label>
+                    <textarea id="edit-item-desc" rows="2" placeholder="Deskripsi singkat hidangan..." class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Menu & Harga
+                    </button>
+                    <button type="button" onclick="window.closeEditMenuItemModal()" class="px-4 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">
                         Batal
                     </button>
                 </div>
