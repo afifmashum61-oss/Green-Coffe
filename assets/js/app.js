@@ -30,8 +30,101 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartGrandTotalEl = document.getElementById('cart-grandtotal');
     const cartCountHeader = document.getElementById('cart-count-header');
     
+    // Auth State & User Roles Management
+    let currentUser = JSON.parse(sessionStorage.getItem('green_cafe_user') || 'null');
+
+    const USERS_DATABASE = [
+        { username: 'kasir', pin: '1234', name: 'Sarah Amalia', role: 'Kasir', avatar: 'SA' },
+        { username: 'admin', pin: '8888', name: 'Budi (Admin Manager)', role: 'Admin', avatar: 'AD' }
+    ];
+
+    function checkAuthStatus() {
+        const loginModal = document.getElementById('login-modal');
+        if (!currentUser) {
+            if (loginModal) {
+                loginModal.classList.remove('hidden');
+                loginModal.classList.add('flex');
+            }
+            window.selectLoginRole('kasir');
+        } else {
+            if (loginModal) {
+                loginModal.classList.add('hidden');
+                loginModal.classList.remove('flex');
+            }
+            updateOperatorProfile();
+        }
+    }
+
+    function updateOperatorProfile() {
+        if (!currentUser) return;
+        const avatarEl = document.getElementById('operator-avatar');
+        const nameEl = document.getElementById('operator-name');
+        const roleEl = document.getElementById('operator-role');
+
+        if (avatarEl) avatarEl.innerText = currentUser.avatar || 'OP';
+        if (nameEl) nameEl.innerText = currentUser.name;
+        if (roleEl) roleEl.innerText = `${currentUser.role} • Shift Active`;
+    }
+
+    window.selectLoginRole = function(role) {
+        const tabKasir = document.getElementById('role-tab-kasir');
+        const tabAdmin = document.getElementById('role-tab-admin');
+        const userInput = document.getElementById('login-username');
+        const passInput = document.getElementById('login-password');
+
+        if (role === 'kasir') {
+            if (tabKasir) tabKasir.className = 'py-2 rounded-xl transition-all bg-emerald-600 text-white shadow-xs';
+            if (tabAdmin) tabAdmin.className = 'py-2 rounded-xl transition-all bg-slate-100 text-slate-600 hover:text-slate-800';
+            if (userInput) userInput.value = 'kasir';
+            if (passInput) passInput.value = '1234';
+        } else {
+            if (tabAdmin) tabAdmin.className = 'py-2 rounded-xl transition-all bg-emerald-600 text-white shadow-xs';
+            if (tabKasir) tabKasir.className = 'py-2 rounded-xl transition-all bg-slate-100 text-slate-600 hover:text-slate-800';
+            if (userInput) userInput.value = 'admin';
+            if (passInput) passInput.value = '8888';
+        }
+    };
+
+    window.togglePasswordVisibility = function() {
+        const input = document.getElementById('login-password');
+        const icon = document.getElementById('password-eye-icon');
+        if (!input || !icon) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash';
+        } else {
+            input.type = 'password';
+            icon.className = 'fa-solid fa-eye';
+        }
+    };
+
+    window.handleLoginSubmit = function(event) {
+        event.preventDefault();
+        const username = document.getElementById('login-username').value.trim().toLowerCase();
+        const pin = document.getElementById('login-password').value.trim();
+
+        const foundUser = USERS_DATABASE.find(u => u.username === username && u.pin === pin);
+        if (!foundUser) {
+            alert('Username atau PIN/Password salah! Silakan coba lagi.');
+            return;
+        }
+
+        currentUser = foundUser;
+        sessionStorage.setItem('green_cafe_user', JSON.stringify(currentUser));
+        checkAuthStatus();
+    };
+
+    window.logoutUser = function() {
+        if (confirm('Apakah Anda yakin ingin keluar / logout dari sistem kasir?')) {
+            currentUser = null;
+            sessionStorage.removeItem('green_cafe_user');
+            checkAuthStatus();
+        }
+    };
+
     // Init Application
     function init() {
+        checkAuthStatus();
         renderCategories();
         renderMenu();
         renderCart();
@@ -870,6 +963,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 const targetTab = link.dataset.tab;
                 if (!targetTab) return;
+
+                // Security Role Check for Admin-only tabs
+                if ((targetTab === 'settings' || targetTab === 'analytics') && currentUser && currentUser.role !== 'Admin') {
+                    alert('🔒 Akses Dibatasi! Halaman Pengaturan POS & Laporan Penjualan hanya dapat diakses oleh akun Mode Admin.');
+                    return;
+                }
 
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
