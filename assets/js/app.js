@@ -238,13 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (role === 'kasir') {
             if (tabKasir) tabKasir.className = 'py-2 rounded-xl transition-all bg-emerald-600 text-white shadow-xs';
             if (tabAdmin) tabAdmin.className = 'py-2 rounded-xl transition-all bg-slate-100 text-slate-600 hover:text-slate-800';
-            if (userInput) userInput.value = 'kasir';
-            if (passInput) passInput.value = '1234';
+            if (userInput && userInput.value === 'admin') userInput.value = '';
+            if (passInput && passInput.value === '8888') passInput.value = '';
         } else {
             if (tabAdmin) tabAdmin.className = 'py-2 rounded-xl transition-all bg-emerald-600 text-white shadow-xs';
             if (tabKasir) tabKasir.className = 'py-2 rounded-xl transition-all bg-slate-100 text-slate-600 hover:text-slate-800';
-            if (userInput) userInput.value = 'admin';
-            if (passInput) passInput.value = '8888';
+            if (userInput && userInput.value === 'kasir') userInput.value = '';
+            if (passInput && passInput.value === '1234') passInput.value = '';
         }
     };
 
