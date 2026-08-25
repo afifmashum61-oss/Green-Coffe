@@ -378,60 +378,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAdmin = currentUser && currentUser.role === 'Admin';
 
         menuGrid.innerHTML = filtered.map(item => `
-            <div class="product-card bg-white rounded-3xl p-4 border border-slate-100 flex flex-col justify-between relative group shadow-sm hover:shadow-md">
+            <div class="product-card bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border border-slate-100 flex flex-col justify-between relative group shadow-xs hover:shadow-md cursor-pointer" onclick="window.openCustomModal(${item.id})">
                 ${item.badge ? `
-                    <span class="absolute top-6 left-6 z-10 px-3 py-1 text-[11px] font-bold tracking-wide uppercase rounded-full shadow-sm ${item.badge === 'Bestseller' ? 'bg-amber-400 text-amber-950' : 'bg-emerald-600 text-white'}">
+                    <span class="absolute top-4 left-4 z-10 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold tracking-wide uppercase rounded-full shadow-xs ${item.badge === 'Bestseller' ? 'bg-amber-400 text-amber-950' : 'bg-emerald-600 text-white'}">
                         ${item.badge}
                     </span>
                 ` : ''}
 
                 ${item.discountBadge ? `
-                    <span class="absolute top-6 right-6 z-10 px-2.5 py-1 text-[10px] font-bold rounded-full bg-rose-500 text-white shadow-sm">
+                    <span class="absolute top-4 right-4 z-10 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-full bg-rose-500 text-white shadow-xs">
                         ${item.discountBadge}
                     </span>
                 ` : ''}
 
-                <div class="overflow-hidden rounded-2xl mb-3 aspect-4/3 bg-slate-50 relative cursor-pointer" onclick="window.openCustomModal(${item.id})">
+                <div class="overflow-hidden rounded-xl sm:rounded-2xl mb-2 sm:mb-3 aspect-4/3 bg-slate-50 relative">
                     <img src="${item.image}" alt="${item.name}" class="img-zoom w-full h-full object-cover">
                 </div>
 
-                <div class="flex flex-col flex-1">
-                    <div class="flex items-center gap-1.5 mb-1 text-amber-400 text-xs font-medium">
+                <div class="flex flex-col flex-1 min-w-0">
+                    <div class="flex items-center gap-1 mb-0.5 text-amber-400 text-[10px] sm:text-xs font-medium">
                         <i class="fa-solid fa-star"></i>
                         <span class="font-bold text-slate-800">${item.rating || 4.8}</span>
-                        <span class="text-slate-400">(${item.reviewsCount || 50})</span>
+                        <span class="text-slate-400 text-[9px] sm:text-[10px]">(${item.reviewsCount || 50})</span>
                     </div>
 
-                    <h3 class="font-bold text-slate-800 text-base leading-tight mb-1 group-hover:text-emerald-700 transition-colors cursor-pointer" onclick="window.openCustomModal(${item.id})">
+                    <h3 class="font-bold text-slate-800 text-xs sm:text-sm md:text-base leading-tight mb-1 truncate group-hover:text-emerald-700 transition-colors">
                         ${item.name}
                     </h3>
-                    <p class="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                    <p class="hidden sm:block text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
                         ${item.description || 'Menu lezat khas Green Cafe.'}
                     </p>
 
-                    <div class="mt-auto pt-2 flex items-center justify-between border-t border-slate-100">
-                        <div>
-                            <div class="text-base font-extrabold text-emerald-800">
+                    <div class="mt-auto pt-1.5 sm:pt-2 flex items-center justify-between border-t border-slate-100 gap-1">
+                        <div class="min-w-0">
+                            <div class="text-xs sm:text-sm md:text-base font-black text-emerald-800 truncate">
                                 ${formatRupiah(item.price)}
                             </div>
                             ${item.originalPrice ? `
-                                <div class="text-[11px] text-slate-400 line-through">
+                                <div class="text-[9px] sm:text-[11px] text-slate-400 line-through truncate">
                                     ${formatRupiah(item.originalPrice)}
                                 </div>
                             ` : ''}
                         </div>
 
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-1 shrink-0">
                             ${isAdmin ? `
-                                <button onclick="window.openEditMenuItemModal(${item.id})" title="Edit Nama & Harga Menu" class="w-8 h-8 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                <button onclick="event.stopPropagation(); window.openEditMenuItemModal(${item.id})" title="Edit Menu" class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all cursor-pointer">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="window.deleteMenuItem(${item.id})" title="Hapus Menu" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-bold transition-all cursor-pointer">
+                                <button onclick="event.stopPropagation(); window.deleteMenuItem(${item.id})" title="Hapus Menu" class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all cursor-pointer">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             ` : ''}
-                            <button onclick="event.stopPropagation(); window.quickAddToCart(${item.id})" title="Tambah ke Keranjang" class="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-all cursor-pointer">
-                                <i class="fa-solid fa-plus text-sm"></i>
+                            <button onclick="event.stopPropagation(); window.quickAddToCart(${item.id})" title="Tambah ke Keranjang" class="w-7 h-7 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center shadow-sm shadow-emerald-600/20 transition-all cursor-pointer">
+                                <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
                             </button>
                         </div>
                     </div>

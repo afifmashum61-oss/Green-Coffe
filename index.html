@@ -222,19 +222,20 @@
 
                     <!-- POPULAR DISHES MENU GRID -->
                     <div>
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center justify-between mb-3 sm:mb-4 gap-2">
                             <div>
-                                <h3 class="font-extrabold text-slate-800 text-lg">Daftar Menu Green Cafe</h3>
-                                <p class="text-xs text-slate-400 font-medium">Klik gambar/nama untuk opsi varian</p>
+                                <h3 class="font-extrabold text-slate-800 text-sm sm:text-base md:text-lg leading-tight">Daftar Menu Green Cafe</h3>
+                                <p class="text-[10px] sm:text-xs text-slate-400 font-medium">Klik menu untuk varian</p>
                             </div>
-                            <div id="admin-add-menu-btn-container" class="hidden">
-                                <button onclick="window.openAddMenuItemModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer">
-                                    <i class="fa-solid fa-plus text-xs"></i>
-                                    <span>Tambah Menu Baru</span>
+                            <div id="admin-add-menu-btn-container" class="hidden shrink-0">
+                                <button onclick="window.openAddMenuItemModal()" class="px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] sm:text-xs rounded-xl shadow-sm flex items-center gap-1 cursor-pointer">
+                                    <i class="fa-solid fa-plus text-[10px] sm:text-xs"></i>
+                                    <span class="hidden sm:inline">Tambah Menu Baru</span>
+                                    <span class="sm:hidden">Tambah</span>
                                 </button>
                             </div>
                         </div>
-                        <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+                        <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-5">
                             <!-- Injected dynamically via app.js -->
                         </div>
                     </div>
