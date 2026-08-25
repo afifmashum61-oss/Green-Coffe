@@ -107,9 +107,9 @@
                     </button>
 
                     <!-- Search Input with Keyboard Shortcut -->
-                    <div class="relative w-48 sm:w-72 md:w-96">
+                    <div class="relative w-48 sm:w-72 md:w-96 lg:w-[28rem]">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="search-input" placeholder="Cari menu, kopi... (Tekan '/' )" 
+                        <input type="text" id="search-input" placeholder="Cari menu, kopi, makanan (Tekan '/' )..." 
                             class="w-full pl-9 pr-8 sm:pl-10 sm:pr-12 py-2 text-xs bg-slate-100/80 border border-transparent rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-all">
                         <span class="hidden sm:inline absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-slate-400 bg-slate-200/70 px-1.5 py-0.5 rounded">/</span>
                     </div>
@@ -127,8 +127,8 @@
                         </div>
                     </div>
 
-                    <!-- Cart Drawer Toggle Button for Mobile/Desktop -->
-                    <button onclick="window.toggleCartDrawer()" class="relative px-3 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-2 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 cursor-pointer">
+                    <!-- Cart Drawer Toggle Button (Only on Mobile/Tablet < lg) -->
+                    <button onclick="window.toggleCartDrawer()" class="lg:hidden relative px-3 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-2 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 cursor-pointer">
                         <i class="fa-solid fa-basket-shopping text-sm"></i>
                         <span class="hidden sm:inline">Keranjang</span>
                         <span id="cart-badge-count" class="w-5 h-5 rounded-full bg-amber-400 text-amber-950 font-extrabold text-[11px] flex items-center justify-center">0</span>
@@ -162,11 +162,10 @@
                             </div>
                         </div>
 
-                        <!-- Hero Featured Card Image (Compact on mobile) -->
+                        <!-- Hero Featured Card Image (Compact on mobile, rich on desktop) -->
                         <div class="hidden sm:block relative shrink-0 w-full sm:w-64 md:w-80 h-36 sm:h-52 rounded-2xl overflow-hidden shadow-lg group">
                             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" 
                                 alt="Spicy Zinger Burger" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            </div>
                         </div>
                     </div>
 
