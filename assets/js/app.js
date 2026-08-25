@@ -636,7 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('green_cafe_orders', JSON.stringify(ordersHistory));
 
         // Sync order to Google Sheets Database if configured
-        const gsheetUrl = localStorage.getItem('green_cafe_gsheet_url');
+        const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbwc6FPWDPxRLeUw6n3_tP4-gV8f6nr9Ds20v0TuM5qsORn2fX4KVpoeEDAKRB9m-bZ2OA/exec';
+        const gsheetUrl = localStorage.getItem('green_cafe_gsheet_url') || DEFAULT_GSHEET_URL;
         if (gsheetUrl && gsheetUrl.trim() !== '') {
             try {
                 fetch(gsheetUrl.trim(), {
@@ -907,9 +908,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Load saved Google Sheets URL into input field
+        const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbwc6FPWDPxRLeUw6n3_tP4-gV8f6nr9Ds20v0TuM5qsORn2fX4KVpoeEDAKRB9m-bZ2OA/exec';
         const gsheetInput = document.getElementById('gsheet-url-input');
         if (gsheetInput) {
-            gsheetInput.value = localStorage.getItem('green_cafe_gsheet_url') || '';
+            gsheetInput.value = localStorage.getItem('green_cafe_gsheet_url') || DEFAULT_GSHEET_URL;
         }
     }
 
